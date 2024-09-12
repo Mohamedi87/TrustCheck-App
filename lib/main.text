@@ -1,0 +1,263 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  // ignore: use_key_in_widget_constructors
+  const MyApp({Key? key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(title: 'هل أنت روبوت ؟'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int num1 = Random().nextInt(100);
+  int num2 = Random().nextInt(100);
+  late String operation = generateRandomOperation();
+  bool? isCorrect;
+
+  void generateNumbers() {
+    setState(() {
+      num1 = Random().nextInt(100);
+      num2 = Random().nextInt(100);
+    });
+  }
+
+  String generateRandomOperation() {
+    final operations = ['+', '-', '/', '*'];
+    return operations[Random().nextInt(operations.length)];
+  }
+
+  bool checkAnswer(String userAnswer) {
+    int result = 0;
+    switch (operation) {
+      case '+':
+        result = (num1 + num2);
+        break;
+      case '-':
+        result = (num1 - num2);
+        break;
+      case '*':
+        result = (num1 * num2);
+        break;
+      case '/':
+        result = num1 ~/ num2;
+        break;
+    }
+
+    int userValue = int.tryParse(userAnswer) ?? 0;
+
+    return userValue == result;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController answerController = TextEditingController();
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: ListView(children: [
+          Column(
+            children: [
+              Container(
+                alignment: const Alignment(0, -0.92),
+                child: const Text(
+                  'أدخل الإجابة الصحيحة',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.black,
+                    height: 1.7,
+                  ),
+                ),
+              ),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 180),
+                margin: const EdgeInsets.only(top: 30),
+                alignment: Alignment.center,
+                child: TextField(
+                  readOnly: true,
+                  controller: TextEditingController(text: '$num1'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  cursorWidth: 1,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 22),
+                child: Text(
+                  operation,
+                  style: const TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 180),
+                margin: const EdgeInsets.only(top: 30),
+                alignment: Alignment.center,
+                child: TextField(
+                  controller: TextEditingController(text: '$num2'),
+                  readOnly: true,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  cursorWidth: 1,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 22),
+                child: const Text(
+                  '=',
+                  style: TextStyle(
+                    fontSize: 32,
+                  ),
+                ),
+              ),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 180),
+                margin: const EdgeInsets.only(top: 30),
+                alignment: Alignment.center,
+                child: TextField(
+                  controller: answerController,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                  ),
+                  cursorWidth: 1,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 22),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: const BorderSide(
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    final userAnswer = answerController.text;
+                    isCorrect = checkAnswer(userAnswer);
+                    setState(() {
+                      isCorrect = checkAnswer(userAnswer);
+                    });
+                  },
+                  child: const Text(
+                    'أدخل',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              assetImage(),
+              const SizedBox(
+                height: 30,
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: const Text(
+                        'Developed by : Mohamed Haj Mousa',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      )),
+                ),
+              )
+            ],
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Container assetImage() {
+    return Container(
+      child: isCorrect == null
+          ? const Text("")
+          : isCorrect == true
+              ? Image.asset(
+                  "images/true.png",
+                  height: 100,
+                  width: 100,
+                )
+              : Image.asset(
+                  "images/false.png",
+                  height: 100,
+                  width: 100,
+                ),
+    );
+  }
+}
